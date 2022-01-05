@@ -2,10 +2,14 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-
 from bot.config import load_config
 from bot.handlers.start import register_start_command
+from bot.handlers.menu import register_menu_handler
+from bot.handlers.create_list import register_list_handler
+from bot.handlers.show_lists import register_show_list_handler
+from bot.handlers.list_menu import register_open_list_menu
 from bot.misc.default_commands import set_default_commands
+from bot.data import for_user_registration
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +24,10 @@ def register_all_filters(dp):
 
 def register_all_handlers(dp):
     register_start_command(dp)
+    register_menu_handler(dp)
+    register_list_handler(dp)
+    register_show_list_handler(dp)
+    register_open_list_menu(dp)
 
 
 async def main():
@@ -40,6 +48,7 @@ async def main():
     register_all_filters(dp)
     register_all_handlers(dp)
     await set_default_commands(dp)
+    await for_user_registration.add_meta()
 
     try:
         await dp.start_polling()
@@ -47,6 +56,8 @@ async def main():
         await dp.storage.close()
         await dp.storage.wait_closed()
         await bot.session.close()
+
+
 
 
 if __name__ == '__main__':
