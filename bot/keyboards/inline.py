@@ -1,7 +1,9 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.data import for_user_registration
-
+from aiogram.utils.callback_data import CallbackData
 from aiogram import types
+
+
 
 #Buttons, menu for MainMenu
 create_list = InlineKeyboardButton(text='Создать список', callback_data='create_list')
@@ -19,14 +21,17 @@ menu.add(tasks_for_day)
 menu.add(motivation_mode)
 menu.add(sad_mode, bored_mode)
 
-ListMenu = InlineKeyboardMarkup(row_width=1)
-show_deals = InlineKeyboardButton(text = "Посмотреть все задачи", callback_data= "show_deals")
-add_deals = InlineKeyboardButton(text = "Добавить задачу", callback_data= "add_deals")
-do_deals = InlineKeyboardButton(text = "Сделать задачу", callback_data= "do_deals")
-edit_deal = InlineKeyboardButton(text = "Редактировать задачу", callback_data= "edit_deal")
-delete_deal = InlineKeyboardButton(text = "Удалить задачу", callback_data= "delete_deal")
-delete_list = InlineKeyboardButton(text = "Удалить список дел", callback_data= "delete_list")
-ListMenu.add(show_deals, add_deals, do_deals, edit_deal, delete_deal, delete_list)
+list_cb = CallbackData('list', 'action')
+
+
+listMenu = InlineKeyboardMarkup(row_width=1)
+show_deals = InlineKeyboardButton(text = "Посмотреть все задачи", callback_data=list_cb.new(action = "show_deals"))
+add_deals = InlineKeyboardButton(text = "Добавить задачу", callback_data=list_cb.new(action = "add_deals"))
+do_deals = InlineKeyboardButton(text = "Сделать задачу", callback_data=list_cb.new(action = "do_deals"))
+edit_deal = InlineKeyboardButton(text = "Редактировать задачу", callback_data=list_cb.new(action = "edit_deal"))
+delete_deal = InlineKeyboardButton(text = "Удалить задачу", callback_data=list_cb.new(action = "delete_deal"))
+delete_list = InlineKeyboardButton(text = "Завершить работу со списком", callback_data=list_cb.new(action = "exit_list"))
+listMenu.add(show_deals, add_deals, do_deals, edit_deal, delete_deal, delete_list)
 
 def create_list_of_lists():
     keyboard = InlineKeyboardMarkup()
@@ -34,6 +39,8 @@ def create_list_of_lists():
     for key, values in for_user_registration.all_lists().items():
         keyboard.add(InlineKeyboardButton(text = key, callback_data=values))
     return keyboard
+
+
 
 # def create_list_of_lists():
 #     keyboard = types.ReplyKeyboardMarkup()

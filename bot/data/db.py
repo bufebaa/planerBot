@@ -1,8 +1,7 @@
-from datetime import datetime, date
+import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime,Date, BOOLEAN
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 
 engine = create_engine('sqlite:///:memory:', echo=True)
@@ -24,16 +23,16 @@ class List_db(Base):
     user_id = Column(Integer, ForeignKey("User.user_id"))
     title = Column(String(250), nullable=False)
 
-# class Task(Base):
-#     __tablename__ = 'Task'
-#
-#     task_id = Column(Integer, primary_key=True)
-#     list_id = Column(Integer, ForeignKey("List.list_id"))
-#     title = Column(String(250), nullable=False)
-#     description = Column(String(250), nullable=False)
-#     complation_date = Column(datetime, nullable=False)
-#     deadline = Column(datetime, nullable=False)
-#     iscomplete = Column(bool = False)
+class Task(Base):
+    __tablename__ = 'Task'
+
+    task_id = Column(Integer, primary_key=True)
+    list_id = Column(Integer, ForeignKey("List.list_id"))
+    title = Column(String(250))
+    description = Column(String(250))
+    # complation_date = Column(DateTime)
+    # deadline = Column(DateTime)
+    # iscomplete = Column(BOOLEAN, default=False)
 
 
 Base.metadata.create_all(engine)

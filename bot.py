@@ -48,7 +48,7 @@ async def main():
     register_all_filters(dp)
     register_all_handlers(dp)
     await set_default_commands(dp)
-    await for_user_registration.add_meta()
+    #await for_user_registration.add_meta()
 
     try:
         await dp.start_polling()
