@@ -1,5 +1,4 @@
 aiogram~=2.12.1
-aioredis<2.0
 environs~=8.0.0
 sqlalchemy~=1.4.29
 mysql-connector-python~=8.0.27
