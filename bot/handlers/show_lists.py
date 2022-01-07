@@ -1,14 +1,16 @@
 from aiogram import types, Dispatcher
+from bot.database.commands.list import is_no_lists_in_db
 from bot.keyboards import inline
 from bot.states import ListCreation
-from bot.data import for_user_registration
 from bot.keyboards.inline import menu
 
 
-async def show_lists(callback : types.CallbackQuery):
-    if for_user_registration.is_lists_in_db() == False:
+async def show_lists(callback: types.CallbackQuery):
+    await callback.answer()
+    if not is_no_lists_in_db(callback.from_user.id):
         await callback.message.answer("Выберите список для работы с ним: ")
-        await callback.message.answer("Все списки дел: ", reply_markup=inline.create_list_of_lists())
+        await callback.message.answer("Все списки дел: ",
+                                      reply_markup=inline.create_list_of_lists(callback.from_user.id))
         await ListCreation.showlists.set()
     else:
         await callback.message.answer("У вас нет текущих списков дел)\nСначала создайте его", reply_markup=menu)

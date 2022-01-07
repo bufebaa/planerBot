@@ -10,7 +10,7 @@ from bot.handlers.show_lists import register_show_list_handler
 from bot.handlers.list_menu import register_open_list_menu
 from bot.handlers.add_deal import register_adding_task_handler
 from bot.misc.default_commands import set_default_commands
-from bot.handlers.callendar import register_test_handler
+from bot.handlers.calendar import register_test_handler
 from bot.handlers.deal_for_today import register_show_today_tasks_handler
 from bot.handlers.get_time import register_get_time
 
@@ -63,8 +63,6 @@ async def main():
         await dp.storage.close()
         await dp.storage.wait_closed()
         await bot.session.close()
-
-
 
 
 if __name__ == '__main__':

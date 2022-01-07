@@ -1,9 +1,8 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from bot.data import for_user_registration
+from bot.database.commands.user import is_not_in_db, add_user
 from bot.states import StartState
 from bot.keyboards.inline import menu
-import re
 
 
 async def command_start_handler(message: types.Message):
@@ -18,16 +17,17 @@ async def command_start_handler(message: types.Message):
                          f'· получать поддержку с помощью режима “мне грустно”\n\n'
                          f'· вносить разнообразие в свои будни с помощью режима “мне скучно”\n\n')
 
-    if for_user_registration.is_in_db(message.from_user.id):
-        await message.answer(text="Введите адресс вашей электронной почты для синхронизации с Google Calendar")
+    if is_not_in_db(message.from_user.id):
+        await message.answer(text="Введите адрес вашей электронной почты для синхронизации с Google Calendar")
+        is_not_in_db(message.from_user.id)
         await StartState.e_mail.set()
     else:
         await message.answer("✨Главное меню✨: ", reply_markup=menu)
 
 
-async def get_email(message: types.Message,state : FSMContext):
-    await for_user_registration.add_user(message.from_user.id, message.text)
-    await message.answer("ваша почта записана!")
+async def get_email(message: types.Message, state: FSMContext):
+    await add_user(message.from_user.id, message.text)
+    await message.answer("Ваша почта записана!")
     await message.answer("✨Главное меню✨: ", reply_markup=menu)
     await state.finish()
 

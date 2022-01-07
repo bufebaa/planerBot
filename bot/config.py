@@ -4,23 +4,24 @@ from typing import List
 
 
 @dataclass
-class DatabaseConfig:
-    host: str
-    password: str
-    user: str
-    database: str
-
-
-@dataclass
 class BotConfig:
     token: str
     admin_ids: List[int]
 
 
 @dataclass
+class GoogleConfig:
+    client_secret: str
+    scopes: List[str]
+    api_service: str
+    api_version: str
+    redirect_url: str
+
+
+@dataclass
 class Config:
     bot: BotConfig
-    database: DatabaseConfig
+    google: GoogleConfig
 
 
 def load_config(path: str = None):
@@ -32,10 +33,11 @@ def load_config(path: str = None):
             token=env.str("BOT_TOKEN"),
             admin_ids=list(map(int, env.list("ADMINS")))
         ),
-        database=DatabaseConfig(
-            host=env.str('DB_HOST'),
-            password=env.str('DB_PASS'),
-            user=env.str('DB_USER'),
-            database=env.str('DB_NAME')
+        google=GoogleConfig(
+            client_secret=env.str('CLIENT_SECRET_FILE'),
+            scopes=env.list('SCOPES'),
+            api_service=env.str('API_SERVICE_NAME'),
+            api_version=env.str('API_VERSION'),
+            redirect_url=env.str('REDIRECT_URL')
         )
     )

@@ -1,10 +1,11 @@
 from aiogram import types, Dispatcher
-from bot.data import for_user_registration
+from bot.database.commands.task import get_today_deals
 
 
-async def show_today_deals(callback : types.CallbackQuery):
+async def show_today_deals(callback: types.CallbackQuery):
+    await callback.answer()
     await callback.message.answer("Дела на сегодня: ")
-    for i in for_user_registration.show_today_deals():
+    for i in get_today_deals(callback.from_user.id):
         await callback.message.answer(str(i))
 
 

@@ -1,7 +1,7 @@
-
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime,Date, BOOLEAN, Time
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, BOOLEAN, BLOB, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
+
 
 engine = create_engine('sqlite:///:memory:', echo=True)
 
@@ -12,7 +12,7 @@ class User(Base):
     __tablename__ = "User"
 
     user_id = Column(Integer, primary_key=True)
-    e_mail = Column(String(250), nullable=False)
+    credentials = Column(String)
 
 
 class List_db(Base):
@@ -22,15 +22,17 @@ class List_db(Base):
     user_id = Column(Integer, ForeignKey("User.user_id"))
     title = Column(String(250), nullable=False)
 
+
 class Task(Base):
     __tablename__ = 'Task'
 
     task_id = Column(Integer, primary_key=True)
     list_id = Column(Integer, ForeignKey("List.list_id"))
+    user_id = Column(Integer, ForeignKey("List.user_id"))
     title = Column(String(250))
     description = Column(String(250))
-    complation_date = Column(Date)
-    complation_time = Column(Time)
+    completion_date = Column(Date)
+    completion_time = Column(Time)
     iscomplete = Column(BOOLEAN, default=False)
 
 
