@@ -1,5 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from bot.data.db import User, List_db, engine, Task
+from datetime import datetime
 
 
 async def add_user(id, e_mail):
@@ -35,6 +36,23 @@ def is_in_db(id):
     else:
         return True
 
+def is_lists_in_db():
+    session = sessionmaker(bind=engine)
+    s = session()
+    if s.query(List_db).first():
+        return False
+    else:
+        return True
+
+
+def is_task_in_list(id):
+    session = sessionmaker(bind=engine)
+    s = session()
+    if s.query(Task).filter(Task.list_id==id).first():
+        return False
+    else:
+        return True
+
 
 def is_list_in_db(name):
     session = sessionmaker(bind=engine)
@@ -59,9 +77,11 @@ def show_all_tasks(list_id):
     list_of_tasks = []
     for temp in s.query(Task).filter(Task.list_id == list_id).all():
         if temp.iscomplete == True:
-            list_of_tasks.append("✅ "+temp.title + ":\n" + temp.description)
+            list_of_tasks.append("✅ "+temp.title + ":\n" + temp.description+f"\nДата: {temp.complation_date}"
+                                                                            f"\nВремя: {temp.complation_time}")
         else:
-            list_of_tasks.append(temp.title+":\n"+temp.description)
+            list_of_tasks.append(temp.title+":\n"+temp.description+f"\nДата: {temp.complation_date}"
+                                                                            f"\nВремя: {temp.complation_time}")
     return list_of_tasks
 
 
@@ -109,3 +129,18 @@ def delete_task(id):
     s = session()
     s.query(Task).filter(Task.task_id == id).delete()
     s.commit()
+
+def show_today_deals():
+    session = sessionmaker(bind=engine)
+    s = session()
+    list_of_deals = []
+    for temp in s.query(Task).filter(Task.complation_date == datetime.now().date()).all():
+        if temp.iscomplete == True:
+            list_of_deals.append("✅ " + temp.title + ":\n" + temp.description + f"\nДата: {temp.complation_date}"
+                                                                                f"\nВремя: {temp.complation_time}")
+        else:
+            list_of_deals.append(temp.title + ":\n" + temp.description + f"\nДата: {temp.complation_date}"
+                                                               f"\nВремя: {temp.complation_time}")
+    if list_of_deals==[]:
+        list_of_deals.append("ОТДЫХАТЬ!\nДел на сегодня нет!!!!")
+    return list_of_deals
