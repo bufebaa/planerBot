@@ -6,3 +6,4 @@ from .editTaskState import EditTask
 from .DeleteTaskState import DeleteTask
 from .addDealState import AddDeal
 from .test import Test
+from .chooseMenu import ChooseMenu

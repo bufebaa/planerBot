@@ -11,6 +11,7 @@ from bot.handlers.list_menu import register_open_list_menu
 from bot.handlers.add_deal import register_adding_task_handler
 from bot.misc.default_commands import set_default_commands
 from bot.handlers.callendar import register_test_handler
+from bot.handlers.deal_for_today import register_show_today_tasks_handler
 from bot.handlers.get_time import register_get_time
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ def register_all_handlers(dp):
     register_adding_task_handler(dp)
     register_test_handler(dp)
     register_get_time(dp)
+    register_show_today_tasks_handler(dp)
 
 
 async def main():

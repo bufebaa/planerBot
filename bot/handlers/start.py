@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from bot.data import for_user_registration
 from bot.states import StartState
 from bot.keyboards.inline import menu
+import re
 
 
 async def command_start_handler(message: types.Message):
@@ -19,7 +20,6 @@ async def command_start_handler(message: types.Message):
 
     if for_user_registration.is_in_db(message.from_user.id):
         await message.answer(text="Введите адресс вашей электронной почты для синхронизации с Google Calendar")
-        for_user_registration.is_in_db(message.from_user.id)
         await StartState.e_mail.set()
     else:
         await message.answer("✨Главное меню✨: ", reply_markup=menu)
