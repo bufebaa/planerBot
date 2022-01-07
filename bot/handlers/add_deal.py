@@ -4,6 +4,9 @@ from bot.data import for_user_registration
 from bot.keyboards import inline
 from bot.states import AddDeal
 from bot.keyboards.inline import menu
+from bot.states import TaskCreation
+from bot.keyboards.callendar import DialogCalendar
+
 
 
 
@@ -30,9 +33,11 @@ async def get_task_title (message: types.Message,state : FSMContext):
 
 
 async def get_task_discription (message: types.Message,state : FSMContext):
+    AddDeal.disc = message.text
     for_user_registration.add_task(AddDeal.list_id, AddDeal.title, message.text)
-    await message.answer("Задача успешно добавлена ", reply_markup=inline.menu)
+    await message.answer("Введите дату задачи: ", reply_markup=await DialogCalendar().start_calendar())
     await state.finish()
+    await TaskCreation.get_date.set()
 
 
 def register_adding_task_handler(dp: Dispatcher):
