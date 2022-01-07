@@ -1,6 +1,5 @@
-import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime,Date, BOOLEAN
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime,Date, BOOLEAN, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
@@ -30,9 +29,9 @@ class Task(Base):
     list_id = Column(Integer, ForeignKey("List.list_id"))
     title = Column(String(250))
     description = Column(String(250))
-    # complation_date = Column(DateTime)
-    # deadline = Column(DateTime)
-    # iscomplete = Column(BOOLEAN, default=False)
+    complation_date = Column(Date)
+    complation_time = Column(Time)
+    iscomplete = Column(BOOLEAN, default=False)
 
 
 Base.metadata.create_all(engine)
