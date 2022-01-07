@@ -21,20 +21,19 @@ async def add_deal(callback : types.CallbackQuery):
 
 async def choose_list(callback : types.CallbackQuery, state : FSMContext):
     data = callback.data
-    AddDeal.list_id = data
+    TaskCreation.list_id = data
     await callback.message.answer("Введите название задачи: ")
     await AddDeal.get_title.set()
 
 
 async def get_task_title (message: types.Message,state : FSMContext):
-    AddDeal.title = message.text
+    TaskCreation.title = message.text
     await message.answer("Введите описание задачи: ")
     await AddDeal.get_disc.set()
 
 
 async def get_task_discription (message: types.Message,state : FSMContext):
-    AddDeal.disc = message.text
-    for_user_registration.add_task(AddDeal.list_id, AddDeal.title, message.text)
+    TaskCreation.disc = message.text
     await message.answer("Введите дату задачи: ", reply_markup=await DialogCalendar().start_calendar())
     await state.finish()
     await TaskCreation.get_date.set()
