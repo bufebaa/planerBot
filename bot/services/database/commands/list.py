@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from bot.database.db import List_db, engine, Task
+from bot.services.database.db import List_db, engine, Task
 
 
 def create_session():

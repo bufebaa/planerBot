@@ -5,7 +5,7 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
 from bot.config import load_config
-from bot.database.commands import find_user
+from bot.services.database import find_user
 
 
 logger = logging.getLogger(__name__)

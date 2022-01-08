@@ -1,8 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 
-from bot.database.commands.list import all_lists
-from bot.database.commands.task import all_tasks
+from bot.services.database.commands.list import all_lists
+from bot.services.database.commands.task import all_tasks
 
 # Buttons, menu for MainMenu
 
@@ -10,8 +10,7 @@ create_list = InlineKeyboardButton(text='Создать список', callback_
 add_task = InlineKeyboardButton(text='Добавить задачу', callback_data='add_task')
 lists = InlineKeyboardButton(text='Просмотреть текущие списки задач', callback_data='lists')
 tasks_for_day = InlineKeyboardButton(text='Просмотреть все задачи на сегодня', callback_data='tasks_for_day')
-motivation_mode = InlineKeyboardButton(text='Режим мотивационных цитат', callback_data='motivation_mode')
-sad_mode = InlineKeyboardButton(text='Режим "мне грустно"', callback_data='sad_mode')
+motivation_mode = InlineKeyboardButton(text='Режим мотивационных цитат', callback_data='motivational_mode')
 bored_mode = InlineKeyboardButton(text='Режим "мне скучно"', callback_data='bored_mode')
 
 menu = InlineKeyboardMarkup()
@@ -19,7 +18,7 @@ menu.add(create_list, add_task)
 menu.add(lists)
 menu.add(tasks_for_day)
 menu.add(motivation_mode)
-menu.add(sad_mode, bored_mode)
+menu.add(bored_mode)
 
 list_cb = CallbackData('list', 'action')
 
@@ -47,6 +46,11 @@ edit_title = InlineKeyboardButton(text="Редактировать назван�
 edit_disc = InlineKeyboardButton(text="Редактировать описание задачи", callback_data=task_cb.new(action="edit_disc"))
 
 editingTaskMenu.add(edit_title, edit_disc)
+
+
+bored_mode_menu = InlineKeyboardMarkup()
+bored_mode_menu.add(InlineKeyboardButton(text='Спасибо', callback_data='menu'))
+bored_mode_menu.add(InlineKeyboardButton(text='Хочу другое задание', callback_data='another_task'))
 
 
 def create_list_of_lists(user_id):

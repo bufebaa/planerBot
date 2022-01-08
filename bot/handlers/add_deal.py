@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from bot.database.commands.list import is_no_lists_in_db
+from bot.services.database.commands.list import is_no_lists_in_db
 from bot.keyboards import inline
 from bot.keyboards.calendar import DialogCalendar
 from bot.states import AddDeal, TaskCreation
@@ -14,7 +14,7 @@ async def add_deal(callback: types.CallbackQuery):
                                       reply_markup=inline.create_list_of_lists(callback.from_user.id))
         await AddDeal.chooseList.set()
     else:
-        await callback.message.answer("У вас нет текущих списков дел)\nСначала создайте его", reply_markup=menu)
+        await callback.message.answer("У вас нет текущих списков дел! Сначала создайте его :)", reply_markup=menu)
 
 
 async def choose_list(callback: types.CallbackQuery, state: FSMContext):

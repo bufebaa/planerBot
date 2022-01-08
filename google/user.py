@@ -1,7 +1,7 @@
 import logging
 import pickle
 
-from bot.database import commands
+from bot.services.database import add_user, update_user, delete_user, find_user
 from google.default_methods import get_flow
 
 logger = logging.getLogger(__name__)
@@ -28,16 +28,16 @@ def fetch_token(user_id, code):
 
 
 def get_user_settings(user_id):
-    return commands.find_user(user_id)
+    return find_user(user_id)
 
 
 def save_user(user_id, credentials):
-    commands.add_user(user_id, credentials)
+    add_user(user_id, credentials)
 
 
 def save_settings(user_id, credentials):
-    commands.update_user(user_id, credentials)
+    update_user(user_id, credentials)
 
 
-def delete_user(user_id):
-    return commands.delete_user(user_id)
+def del_user(user_id):
+    delete_user(user_id)

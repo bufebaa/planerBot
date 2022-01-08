@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from bot.database.db import User, engine
+from bot.services.database.db import User, engine
 
 
 def create_session():
@@ -24,18 +24,26 @@ def is_not_in_db(user_id):
 
 def find_user(user_id):
     s = create_session()
-    return s.query(User).filter(User.user_id == user_id)
+    return s.query(User).filter(User.user_id == user_id).first()
 
 
-def update_user(user_id, credentials, time_zone):
+def update_credentials(user_id, credentials):
     s = create_session()
-    user = find_user(user_id)
-    user.credentials = credentials
-    user.time_zone = time_zone
+    s.query(User).filter(User.user_id == user_id).update({"credentials": credentials})
     s.commit()
 
 
 def delete_user(user_id):
     s = create_session()
     s.query(User).filter(User.user_id == user_id).delete()
+    s.commit()
+
+
+def switch_mode(user_id):
+    s = create_session()
+    user = find_user(user_id)
+    if user.is_mode_on:
+        user.update({"is_mode_on": False})
+    else:
+        user.update({"is_mode_on": True})
     s.commit()

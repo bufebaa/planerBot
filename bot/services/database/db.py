@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date, BOOLEAN, BLOB, Time
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, BOOLEAN, BLOB, Time, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
@@ -13,6 +13,7 @@ class User(Base):
 
     user_id = Column(Integer, primary_key=True)
     credentials = Column(String)
+    is_mode_on = Column(BOOLEAN)
 
 
 class List_db(Base):
@@ -34,6 +35,22 @@ class Task(Base):
     completion_date = Column(Date)
     completion_time = Column(Time)
     iscomplete = Column(BOOLEAN, default=False)
+    whencomplete = Column(DateTime)
+
+
+class Quote(Base):
+    __tablename__ = 'Quote'
+
+    quote_id = Column(Integer, primary_key=True)
+    quote = Column(String(1000))
+
+
+class ModeTask(Base):
+    __tablename__ = 'ModeTask'
+
+    task_id = Column(Integer, primary_key=True)
+    task = Column(String(1000))
 
 
 Base.metadata.create_all(engine)
+

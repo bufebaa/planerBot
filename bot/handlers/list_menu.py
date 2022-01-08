@@ -1,6 +1,7 @@
-from bot.database.commands import task
-from bot.database.commands.list import is_not_tasks_in_list, get_title_of_list
-from bot.database.commands.task import all_tasks_in_list, complete_task
+from bot.misc.scheduler import del_task_reminders
+from bot.services.database.commands import task
+from bot.services.database.commands.list import is_not_tasks_in_list, get_title_of_list
+from bot.services.database.commands.task import all_tasks_in_list, complete_task, get_task
 from bot.keyboards.calendar import DialogCalendar
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
@@ -13,7 +14,7 @@ async def open_list_menu(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data
     await state.update_data(list_id=int(data))
-    await callback.message.answer("✨Меню списка: ", reply_markup=inline.listMenu)
+    await callback.message.answer("✨Меню списка✨: ", reply_markup=inline.listMenu)
     await ListCreation.next()
     TaskCreation.list_id = int(data)
 
@@ -36,8 +37,8 @@ async def action_with_menu(callback: types.CallbackQuery, callback_data: dict, s
                 await callback.message.answer(str(i))
             await callback.message.answer("✨✨✨✨✨✨✨✨", reply_markup=inline.list_main)
         else:
-            await callback.message.answer("У вас нет задач в этом списке!\n"
-                                          "Добавьте задачу!", reply_markup=inline.listMenu)
+            await callback.message.answer("У вас нет задач в этом списке! Добавьте задачу :)",
+                                          reply_markup=inline.listMenu)
 
     elif "do_deals" == action:
         if not is_not_tasks_in_list(TaskCreation.list_id):
@@ -46,8 +47,8 @@ async def action_with_menu(callback: types.CallbackQuery, callback_data: dict, s
             await state.finish()
             await CompleteState.choose.set()
         else:
-            await callback.message.answer("У вас нет задач в этом списке!\n"
-                                          "Добавьте задачу!", reply_markup=inline.listMenu)
+            await callback.message.answer("У вас нет задач в этом списке! Добавьте задачу :)",
+                                          reply_markup=inline.listMenu)
 
     elif "edit_deal" == action:
         if not is_not_tasks_in_list(TaskCreation.list_id):
@@ -56,8 +57,8 @@ async def action_with_menu(callback: types.CallbackQuery, callback_data: dict, s
             await state.finish()
             await EditTask.choice1.set()
         else:
-            await callback.message.answer("У вас нет задач в этом списке!\n"
-                                          "Добавьте задачу!", reply_markup=inline.listMenu)
+            await callback.message.answer("У вас нет задач в этом списке! Добавьте задачу :)",
+                                          reply_markup=inline.listMenu)
 
     elif "delete_deal" == action:
         if not is_not_tasks_in_list(TaskCreation.list_id):
@@ -66,8 +67,8 @@ async def action_with_menu(callback: types.CallbackQuery, callback_data: dict, s
             await state.finish()
             await DeleteTask.chooseTastToDelete.set()
         else:
-            await callback.message.answer("У вас нет задач в этом списке!\n"
-                                          "Добавте задачу!", reply_markup=inline.listMenu)
+            await callback.message.answer("У вас нет задач в этом списке! Добавьте задачу :)",
+                                          reply_markup=inline.listMenu)
 
     elif "exit_list" == action:
         await state.finish()
@@ -97,16 +98,17 @@ async def get_task_title(message: types.Message, state: FSMContext):
 
 async def get_task_description(message: types.Message, state: FSMContext):
     TaskCreation.disc = message.text
-    await message.answer("Введите дату задачи: ", reply_markup=await DialogCalendar().start_calendar())
+    await message.answer("Выберите дату выполнения задачи: ", reply_markup=await DialogCalendar().start_calendar())
     await TaskCreation.get_date.set()
 
 
 # In order to complete Task
 async def complete_task(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
-    data = callback.data
-    task.complete_task(data)
-    await callback.message.answer("Сделано ✨", reply_markup=inline.listMenu)
+    task_id = callback.data
+    task.complete_task(task_id)
+    del_task_reminders(task_id)
+    await callback.message.answer("Задача успешно выполнена! Молодец✨", reply_markup=inline.listMenu)
     await state.finish()
     await ListCreation.actionwithmenu.set()
 
@@ -116,7 +118,7 @@ async def edit_task(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data
     EditTask.id_task = data
-    await callback.message.answer("Выберите что вы хотите редактировать: ", reply_markup=inline.editingTaskMenu)
+    await callback.message.answer("Выберите то, что вы хотите отредактировать: ", reply_markup=inline.editingTaskMenu)
     await EditTask.choice2.set()
 
 
@@ -151,9 +153,11 @@ async def edit_desc(message: types.Message, state: FSMContext):
 
 async def delete_task(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
-    data = callback.data
-    task.delete_task(data)
-    await callback.message.answer("Задача была успешно удалена!)", reply_markup=inline.listMenu)
+    task_id = callback.data
+    if not get_task(task_id).iscomplete:
+        del_task_reminders(task_id)
+    task.delete_task(task_id)
+    await callback.message.answer("Задача была успешно удалена✨", reply_markup=inline.listMenu)
     await state.finish()
     await ListCreation.actionwithmenu.set()
 

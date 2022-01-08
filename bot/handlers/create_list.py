@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from bot.database.commands.list import add_list
+from bot.services.database.commands.list import add_list
 from bot.states import ListCreation
 from bot.keyboards import inline
 

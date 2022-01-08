@@ -9,3 +9,4 @@ google-auth-httplib2
 flask
 requests
 aiogram_calendar
+apscheduler
