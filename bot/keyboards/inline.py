@@ -53,6 +53,11 @@ bored_mode_menu.add(InlineKeyboardButton(text='Спасибо', callback_data='m
 bored_mode_menu.add(InlineKeyboardButton(text='Хочу другое задание', callback_data='another_task'))
 
 
+start_menu = InlineKeyboardMarkup()
+start_menu.add(InlineKeyboardButton(text='Да', callback_data='authorize'))
+start_menu.add(InlineKeyboardButton(text='Нет', callback_data='start_add_user'))
+
+
 def create_list_of_lists(user_id):
     keyboard = InlineKeyboardMarkup()
     keyboard.row_width = 1

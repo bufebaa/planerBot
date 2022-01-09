@@ -22,4 +22,4 @@ async def send_task(callback: types.CallbackQuery):
 
 def register_bored_mode_handler(dp: Dispatcher):
     dp.register_callback_query_handler(bored_mode_handler, text="bored_mode")
-    dp.register_callback_query_handler(bored_mode_handler, text="another_task")
+    dp.register_callback_query_handler(another_task_handler, text="another_task")

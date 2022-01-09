@@ -5,8 +5,7 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
 from bot.config import load_config
-from bot.services.database import find_user
-
+from bot.services.database.commands.user import find_user
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ def get_flow():
 
 def get_credentials(user_id):
     try:
-        credentials = pickle.loads(find_user(user_id).get('credentials'))
+        credentials = pickle.loads(find_user(user_id).credentials)
 
     except TypeError:
         logger.error(TypeError, user_id=user_id)

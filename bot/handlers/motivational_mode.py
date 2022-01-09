@@ -2,7 +2,7 @@ from aiogram import types, Dispatcher
 
 from bot.config import load_config
 from bot.misc.scheduler import motivational_mode_on, motivational_mode_off, test_motivational_mode
-from bot.services.database.commands.user import find_user
+from bot.services.database.commands.user import find_user, switch_mode
 
 
 async def motivational_mode_handler(callback: types.CallbackQuery):
@@ -10,14 +10,19 @@ async def motivational_mode_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     dp = Dispatcher.get_current()
     if find_user(user_id).is_mode_on:
-        await motivational_mode_off(user_id)
+        motivational_mode_off(user_id)
         msg = "Режим успешно отключен✨"
     else:
         motivational_mode_on(dp, user_id)
         msg = "Режим успешно включен✨\n" \
               "Цитаты будут отправлятся вам каждое утро. Надеемся, что это сделает вас более мотивированными!"
+        await admin_mode(callback, dp)
+    switch_mode(user_id)
     await callback.message.answer(msg)
 
+
+async def admin_mode(callback: types.CallbackQuery, dp: Dispatcher):
+    user_id = callback.from_user.id
     config = load_config('.env')
     if user_id in config.bot.admin_ids:
         await callback.message.answer("ADMIN MODE")

@@ -38,10 +38,10 @@ def is_not_list_in_db(title):
         return True
 
 
-def get_title_of_list(user_id):
+def get_title_of_list(list_id):
     s = create_session()
     temp = str
-    for i in s.query(List_db).filter(List_db.list_id == user_id).all():
+    for i in s.query(List_db).filter(List_db.list_id == list_id).all():
         temp = i.title
     return temp
 
@@ -52,3 +52,8 @@ def is_not_tasks_in_list(list_id):
         return False
     else:
         return True
+
+
+def get_list(list_id):
+    s = create_session()
+    return s.query(List_db).filter(List_db.list_id == list_id).first()

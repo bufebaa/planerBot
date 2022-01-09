@@ -7,9 +7,16 @@ def create_session():
     return session()
 
 
-async def add_user(user_id, credentials):
+def add_user(user_id, credentials):
     s = create_session()
     temp_user = User(user_id=user_id, credentials=credentials)
+    s.add(temp_user)
+    s.commit()
+
+
+def start_add_user(user_id):
+    s = create_session()
+    temp_user = User(user_id=user_id)
     s.add(temp_user)
     s.commit()
 
@@ -41,9 +48,34 @@ def delete_user(user_id):
 
 def switch_mode(user_id):
     s = create_session()
-    user = find_user(user_id)
-    if user.is_mode_on:
+    user = s.query(User).filter(User.user_id == user_id)
+    if user.first().is_mode_on:
         user.update({"is_mode_on": False})
     else:
         user.update({"is_mode_on": True})
     s.commit()
+
+
+def authorized(user_id):
+    s = create_session()
+    user = s.query(User).filter(User.user_id == user_id)
+    user.update({"is_google_synchronized": True})
+    s.commit()
+
+
+def switch_google_sync(user_id):
+    s = create_session()
+    user = s.query(User).filter(User.user_id == user_id)
+    if user.first().is_mode_on:
+        user.update({"is_google_synchronized": False})
+    else:
+        user.update({"is_google_synchronized": True})
+    s.commit()
+
+
+def logout_user(user_id):
+    s = create_session()
+    user = s.query(User).filter(User.user_id == user_id)
+    user.update({"is_google_synchronized": False})
+    s.query(User).filter(User.user_id == user_id).update({"credentials": None})
+

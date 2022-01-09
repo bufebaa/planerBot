@@ -12,8 +12,9 @@ class User(Base):
     __tablename__ = "User"
 
     user_id = Column(Integer, primary_key=True)
-    credentials = Column(String)
-    is_mode_on = Column(BOOLEAN)
+    credentials = Column(BLOB)
+    is_mode_on = Column(BOOLEAN, default=False)
+    is_google_synchronized = Column(BOOLEAN, default=False)
 
 
 class List_db(Base):

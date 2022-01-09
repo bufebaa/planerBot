@@ -1,3 +1,4 @@
+import google_core
 from bot.misc.scheduler import del_task_reminders
 from bot.services.database.commands import task
 from bot.services.database.commands.list import is_not_tasks_in_list, get_title_of_list
@@ -5,9 +6,12 @@ from bot.services.database.commands.task import all_tasks_in_list, complete_task
 from bot.keyboards.calendar import DialogCalendar
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
+
+from bot.services.database.commands.user import find_user
 from bot.states import ListCreation, TaskCreation, CompleteState, EditTask, DeleteTask, ChooseMenu
 from bot.keyboards import inline
 from bot.keyboards.inline import list_cb, task_cb, list_main_cb
+from google_core import tasks
 
 
 async def open_list_menu(callback: types.CallbackQuery, state: FSMContext):
@@ -107,6 +111,10 @@ async def complete_task(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     task_id = callback.data
     task.complete_task(task_id)
+    current_task = get_task(task_id)
+    user = find_user(callback.from_user.id)
+    if user.is_google_synchronized:
+        tasks.complete_task(current_task.user_id, current_task.list_id, current_task.title)
     del_task_reminders(task_id)
     await callback.message.answer("Задача успешно выполнена! Молодец✨", reply_markup=inline.listMenu)
     await state.finish()
@@ -156,6 +164,10 @@ async def delete_task(callback: types.CallbackQuery, state: FSMContext):
     task_id = callback.data
     if not get_task(task_id).iscomplete:
         del_task_reminders(task_id)
+    current_task = get_task(task_id)
+    user = find_user(callback.from_user.id)
+    if user.is_google_synchronized:
+        tasks.delete_task(current_task.user_id, current_task.list_id, current_task.title)
     task.delete_task(task_id)
     await callback.message.answer("Задача была успешно удалена✨", reply_markup=inline.listMenu)
     await state.finish()

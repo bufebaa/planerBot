@@ -4,11 +4,14 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from bot.config import load_config
+from bot.handlers.authorize import register_authorize_handler
 from bot.handlers.bored_mode import register_bored_mode_handler
 from bot.handlers.bored_mode_control import register_tasks_control
 from bot.handlers.help import register_help_command
+from bot.handlers.logout import register_logout_handler
 from bot.handlers.motivational_mode import register_motivational_mode_handler
 from bot.handlers.motivational_mode_control import register_quotes_control
+from bot.handlers.photo import register_photo_handler
 from bot.handlers.start import register_start_command
 from bot.handlers.menu import register_menu_handler
 from bot.handlers.create_list import register_list_handler
@@ -22,6 +25,7 @@ from bot.handlers.deal_for_today import register_show_today_tasks_handler
 from bot.handlers.get_time import register_get_time
 from bot.misc.scheduler import start
 from bot.services.database.commands import quote, mode_task
+from flask_core.program import app
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +37,8 @@ def register_all_handlers(dp):
     register_statistics_command(dp)
     register_quotes_control(dp)
     register_tasks_control(dp)
+    register_authorize_handler(dp)
+    register_logout_handler(dp)
     register_list_handler(dp)
     register_show_list_handler(dp)
     register_open_list_menu(dp)
@@ -42,6 +48,7 @@ def register_all_handlers(dp):
     register_show_today_tasks_handler(dp)
     register_motivational_mode_handler(dp)
     register_bored_mode_handler(dp)
+    register_photo_handler(dp)
 
 
 def load_example_data():

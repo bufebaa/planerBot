@@ -4,9 +4,12 @@ from bot.config import load_config
 from bot.misc.scheduler import add_task_reminders, add_test_reminder
 from bot.services.database.commands.task import add_task, get_last_task_id
 from bot.keyboards import inline
+from bot.services.database.commands.user import find_user
 from bot.states import TaskCreation, ListCreation
 from aiogram.dispatcher import FSMContext
 from datetime import time
+
+from google_core import tasks
 
 
 async def get_time(message: types.Message, state: FSMContext):
@@ -16,7 +19,10 @@ async def get_time(message: types.Message, state: FSMContext):
         return await message.answer("Введено некорректное время :(")
     add_task(message.from_user.id, TaskCreation.list_id, TaskCreation.title, TaskCreation.disc,
              TaskCreation.date, set_time)
-
+    user = find_user(message.from_user.id)
+    if user.is_google_synchronized:
+        tasks.add_task(message.from_user.id, TaskCreation.list_id, TaskCreation.title, TaskCreation.disc,
+                       TaskCreation.date, set_time)
     await message.answer("Задача успешно добавлена ✨", reply_markup=inline.listMenu)
     await state.finish()
 
@@ -35,4 +41,3 @@ async def get_time(message: types.Message, state: FSMContext):
 
 def register_get_time(dp: Dispatcher):
     dp.register_message_handler(get_time, state=TaskCreation.get_time)
-
